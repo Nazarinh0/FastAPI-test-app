@@ -13,6 +13,14 @@ app = FastAPI(
 )
 
 
+@app.exception_handler(ValidationException)
+async def ValidationException(request: Request, exc: ValidationException):
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content=jsonable_encoder({"detail": exc.errors()}),
+    )
+
+
 fake_users = [
     {"id": 1, "role": "admin", "name": "Bob"},
     {"id": 2, "role": "investor", "name": "John"},

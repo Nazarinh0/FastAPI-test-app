@@ -10,7 +10,7 @@ from fastapi_users import FastAPIUsers
 from test_app.auth.auth import auth_backend
 from test_app.auth.manager import get_user_manager
 from test_app.auth.schemas import UserCreate, UserRead
-from test_app.models.models import User
+from test_app.auth.database import User
 
 
 fastapi_users = FastAPIUsers[User, int](

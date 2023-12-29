@@ -15,7 +15,7 @@ from datetime import datetime
 metadata = MetaData()
 
 role = Table(
-    "roles",
+    "role",
     metadata,
     Column("id", Integer, primary_key=True),
     Column("name", String, nullable=False),
@@ -23,7 +23,7 @@ role = Table(
 )
 
 user = Table(
-    "users",
+    "user",
     metadata,
     Column("id", Integer, primary_key=True),
     Column("email", String, nullable=False),

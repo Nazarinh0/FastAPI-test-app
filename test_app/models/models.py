@@ -7,7 +7,7 @@ from sqlalchemy import (
     String,
     TIMESTAMP,
     ForeignKey,
-    JSON
+    JSON,
 )
 from datetime import datetime
 
@@ -35,5 +35,3 @@ user = Table(
     Column("is_superuser", Boolean, default=False, nullable=False),
     Column("is_verified", Boolean, default=False, nullable=False),
 )
-
-

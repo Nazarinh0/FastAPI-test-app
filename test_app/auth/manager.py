@@ -9,7 +9,7 @@ from test_app.auth.database import User, get_user_db
 SECRET = "SECRET"
 
 
-class UserManager(IntegerIDMixin, BaseUserManager[User,int]):
+class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     reset_password_token_secret = SECRET
     verification_token_secret = SECRET
 
@@ -26,7 +26,6 @@ class UserManager(IntegerIDMixin, BaseUserManager[User,int]):
     ):
         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
-
     async def create(
         self,
         user_create: schemas.UC,
@@ -37,11 +36,11 @@ class UserManager(IntegerIDMixin, BaseUserManager[User,int]):
         Customized create method to add a role_id to the user.
         """
         await self.validate_password(user_create.password, user_create)
-        
+
         existing_user = await self.user_db.get_by_email(user_create.email)
         if existing_user is not None:
             raise exceptions.UserAlreadyExists()
-        
+
         user_dict = (
             user_create.create_update_dict()
             if safe

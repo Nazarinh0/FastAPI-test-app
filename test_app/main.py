@@ -18,9 +18,7 @@ fastapi_users = FastAPIUsers[User, int](
     [auth_backend],
 )
 
-app = FastAPI(
-    title="TestApp"
-)
+app = FastAPI(title="TestApp")
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
@@ -34,6 +32,7 @@ app.include_router(
     tags=["auth"],
 )
 
+
 @app.exception_handler(ValidationException)
 async def ValidationException(request: Request, exc: ValidationException):
     return JSONResponse(
@@ -44,9 +43,11 @@ async def ValidationException(request: Request, exc: ValidationException):
 
 current_user = fastapi_users.current_user()
 
+
 @app.get("/protected-route")
 def protected_route(user: User = Depends(current_user)):
     return f"Hello, {user.username}"
+
 
 @app.get("/unprotected-route")
 def unprotected_route(user: User = Depends(current_user)):
@@ -57,10 +58,16 @@ fake_users = [
     {"id": 1, "role": "admin", "name": "Bob"},
     {"id": 2, "role": "investor", "name": "John"},
     {"id": 3, "role": "trader", "name": "Matt"},
-    {"id": 4, "role": "trader", "name": "Homer", "degree": [
-        {"id": 1, "created_at": "2023-01-01T12:23:57", "type_degree": "expert"}
-    ]},
+    {
+        "id": 4,
+        "role": "trader",
+        "name": "Homer",
+        "degree": [
+            {"id": 1, "created_at": "2023-01-01T12:23:57", "type_degree": "expert"}
+        ],
+    },
 ]
+
 
 @app.get("/")
 def hello():
@@ -96,8 +103,22 @@ def get_user(user_id: int):
 
 
 fake_trades = [
-    {"id": 1, "user_id": 1, "currency": "BTC", "side": "buy", "price": 123, "amount": 2.12},
-    {"id": 2, "user_id": 2, "currency": "BTC", "side": "sell", "price": 125, "amount": 2.12},
+    {
+        "id": 1,
+        "user_id": 1,
+        "currency": "BTC",
+        "side": "buy",
+        "price": 123,
+        "amount": 2.12,
+    },
+    {
+        "id": 2,
+        "user_id": 2,
+        "currency": "BTC",
+        "side": "sell",
+        "price": 125,
+        "amount": 2.12,
+    },
 ]
 
 

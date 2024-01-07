@@ -11,6 +11,7 @@ from src.auth.auth import auth_backend
 from src.auth.manager import get_user_manager
 from src.auth.schemas import UserCreate, UserRead
 from src.database import User
+from src.operations.router import router as router_operation
 
 
 fastapi_users = FastAPIUsers[User, int](
@@ -23,15 +24,16 @@ app = FastAPI(title="TestApp")
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth/jwt",
-    tags=["auth"],
+    tags=["Auth"],
 )
 
 app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth",
-    tags=["auth"],
+    tags=["Auth"],
 )
 
+app.include_router(router_operation)
 
 @app.exception_handler(ValidationException)
 async def ValidationException(request: Request, exc: ValidationException):

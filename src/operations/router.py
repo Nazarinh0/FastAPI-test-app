@@ -6,6 +6,7 @@ router = APIRouter(
     tags=["Operations"],
 )
 
+
 @router.get("/")
 async def get_operations():
     return {"message": "Hello World"}

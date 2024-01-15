@@ -35,6 +35,7 @@ app.include_router(
 
 app.include_router(router_operation)
 
+
 @app.exception_handler(ValidationException)
 async def ValidationException(request: Request, exc: ValidationException):
     return JSONResponse(

@@ -1,6 +1,5 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
 from fastapi import Depends, FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ValidationException
@@ -97,10 +96,10 @@ class User(BaseModel):
     id: int
     role: str
     name: str
-    degree: Optional[List[Degree]] = []
+    degree: list[Degree] = []
 
 
-@app.get("/users/{user_id}", response_model=List[User])
+@app.get("/users/{user_id}", response_model=list[User])
 def get_user(user_id: int):
     return [user for user in fake_users if user.get("id") == user_id]
 
@@ -147,6 +146,6 @@ class Trade(BaseModel):
 
 
 @app.post("/trades")
-def add_trades(trades: List[Trade]):
+def add_trades(trades: list[Trade]):
     fake_trades.extend(trades)
     return {"status": 200, "data": fake_trades}

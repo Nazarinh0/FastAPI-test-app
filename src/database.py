@@ -6,7 +6,7 @@ from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
 from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Mapped, mapped_column, relationship
 
 from src.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER
 
@@ -18,11 +18,12 @@ Base: DeclarativeMeta = declarative_base()
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
-    id = Column(Integer, primary_key=True)
-    email = Column(String, nullable=False)
-    username = Column(String, nullable=False)
-    registered_at = Column(TIMESTAMP, default=datetime.utcnow)
-    role_id = Column(Integer, ForeignKey(role.c.id))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String, nullable=False)
+    username: Mapped[str] = mapped_column(String, nullable=False)
+    registered_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.utcnow)
+    role_id: Mapped[int] = mapped_column(Integer, ForeignKey('role.id'))
+    role: Mapped["Role"] = relationship("Role", back_populates="users")
 
 
 engine = create_async_engine(DATABASE_URL)

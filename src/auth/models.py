@@ -1,37 +1,31 @@
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
 from sqlalchemy import (
-    Boolean,
-    MetaData,
-    Table,
-    Column,
     Integer,
     String,
     TIMESTAMP,
     ForeignKey,
     JSON,
 )
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
+from src.database import Base
 
-metadata = MetaData()
 
-role = Table(
-    "role",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("name", String, nullable=False),
-    Column("permissions", JSON),
-)
+class Role(Base):
+    __tablename__ = "role"
 
-user = Table(
-    "user",
-    metadata,
-    Column("id", Integer, primary_key=True),
-    Column("email", String, nullable=False),
-    Column("username", String, nullable=False),
-    Column("hashed_password", String, nullable=False),
-    Column("registered_at", TIMESTAMP, default=datetime.utcnow),
-    Column("role_id", Integer, ForeignKey(role.c.id)),
-    Column("is_active", Boolean, default=True, nullable=False),
-    Column("is_superuser", Boolean, default=False, nullable=False),
-    Column("is_verified", Boolean, default=False, nullable=False),
-)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    permissions: Mapped[dict] = mapped_column(JSON)
+    users: Mapped[list["User"]] = relationship("User", back_populates="role")
+
+
+class User(SQLAlchemyBaseUserTable[int], Base):
+    __tablename__ = "user"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    username: Mapped[str] = mapped_column(String, nullable=False)
+    registered_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.utcnow)
+    role_id: Mapped[int] = mapped_column(Integer, ForeignKey('role.id'))
+    role: Mapped["Role"] = relationship("Role", back_populates="users")

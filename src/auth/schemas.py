@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from fastapi_users import schemas
 
 
@@ -14,3 +15,13 @@ class UserCreate(schemas.BaseUserCreate):
 class UserUpdate(schemas.BaseUserUpdate):
     username: str
     role_id: int
+
+
+class RoleRead(BaseModel):
+    name: str
+    permissions: dict
+
+
+class RoleCreate(BaseModel):
+    name: str
+    permissions: dict

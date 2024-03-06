@@ -25,7 +25,6 @@ config.set_section_option(section, "DB_PASS", DB_PASS)
 config.set_section_option(section, "DB_HOST", DB_HOST)
 config.set_section_option(section, "DB_PORT", DB_PORT)
 config.set_section_option(section, "DB_NAME", DB_NAME)
-
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:

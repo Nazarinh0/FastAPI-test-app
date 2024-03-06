@@ -3,14 +3,14 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ValidationException
 from fastapi.responses import JSONResponse
 from fastapi_users import FastAPIUsers
-from sqlalchemy.orm import Session
 
 from src.auth.auth import auth_backend
 from src.auth.manager import  get_user_manager
-from src.auth.schemas import UserCreate, UserRead
+from src.auth.schemas import UserCreate, UserRead, RoleCreate, RoleRead
 from src.auth.models import User, Role
 from src.operations.router import router as router_operation
-
+from src.auth.router import router as router_auth
+from src.database import get_async_session
 
 fastapi_users = FastAPIUsers[User, int](
     get_user_manager,
@@ -32,7 +32,7 @@ app.include_router(
 )
 
 app.include_router(router_operation)
-
+app.include_router(router_auth)
 
 @app.exception_handler(ValidationException)
 async def ValidationException(request: Request, exc: ValidationException):

@@ -1,8 +1,13 @@
+from contextlib import asynccontextmanager
+
 from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ValidationException
 from fastapi.responses import JSONResponse
 from fastapi_users import FastAPIUsers
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from redis import asyncio as aioredis
 
 from src.auth.auth import auth_backend
 from src.auth.manager import  get_user_manager
@@ -18,7 +23,20 @@ fastapi_users = FastAPIUsers[User, int](
     [auth_backend],
 )
 
-app = FastAPI(title="TestApp")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Launch FastAPICache via Redia before app startup
+    This function should be decorated with asynccontextmanager
+    and passed to FastAPI's lifespan argument
+    """
+    redis = aioredis.from_url("redis://localhost")
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    yield
+
+
+app = FastAPI(title="TestApp", lifespan=lifespan)
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),

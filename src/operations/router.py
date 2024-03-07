@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import ValidationError
+from sqlalchemy import exc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.operations.models import Operation
@@ -21,16 +22,26 @@ async def get_operations(session: AsyncSession = Depends(get_async_session)):
     return operations
 
 
-@router.post("/{operation_id}", response_model=OperationRead)
-async def get_operation(operation_id: int, session: AsyncSession = Depends(get_async_session)):
-    query = select(Operation).where(Operation.type == operation_id)
-    result = await session.execute(query)
-    operations = result.scalars().all()
-    return operations
+@router.get("/{operation_id}", response_model=OperationRead)
+async def get_operation(
+    operation_id: int, session: AsyncSession = Depends(get_async_session)
+):
+    try:
+        query = select(Operation).where(Operation.id == operation_id)
+        result = await session.execute(query)
+        operations = result.scalar_one()
+        return operations
+    except exc.NoResultFound:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Operation with id={operation_id} not found"
+        )
 
 
 @router.post("/", response_model=OperationRead)
-async def add_operations(new_operation: OperationCreate, session: AsyncSession = Depends(get_async_session)):
+async def add_operations(
+    new_operation: OperationCreate, session: AsyncSession = Depends(get_async_session)
+):
     new_operation = Operation(**new_operation.model_dump())
     session.add(new_operation)
     await session.flush()

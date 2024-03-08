@@ -4,24 +4,16 @@ from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import ValidationException
 from fastapi.responses import JSONResponse
-from fastapi_users import FastAPIUsers
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 
-from src.auth.auth import auth_backend
-from src.auth.manager import  get_user_manager
+from src.auth.auth import auth_backend, fastapi_users
 from src.auth.schemas import UserCreate, UserRead
-from src.auth.models import User
 from src.operations.router import router as router_operation
 from src.auth.router import router as router_auth
+from src.tasks.router import router as router_task
 from src.database import get_async_session
-
-
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
 
 
 @asynccontextmanager
@@ -50,6 +42,7 @@ app.include_router(
 )
 app.include_router(router_operation)
 app.include_router(router_auth)
+app.include_router(router_task)
 
 
 @app.exception_handler(ValidationException)

@@ -1,7 +1,9 @@
+import time
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import ValidationError
 from sqlalchemy import exc, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi_cache.decorator import cache
 
 from src.operations.models import Operation
 from src.database import get_async_session
@@ -47,3 +49,10 @@ async def add_operations(
     await session.flush()
     await session.commit()
     return new_operation
+
+
+@router.get("/long_operation/")
+@cache(expire=60)
+def get_lo():
+    time.sleep(5)
+    return "This is a long operation"

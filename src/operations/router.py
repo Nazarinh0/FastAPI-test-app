@@ -41,7 +41,7 @@ async def get_operation(
 
 
 @router.post("/", response_model=OperationRead)
-async def add_operations(
+async def add_operation(
     new_operation: OperationCreate, session: AsyncSession = Depends(get_async_session)
 ):
     new_operation = Operation(**new_operation.model_dump())

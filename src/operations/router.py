@@ -1,6 +1,5 @@
 import time
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import ValidationError
 from sqlalchemy import exc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_cache.decorator import cache

@@ -14,6 +14,7 @@ from src.config import DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
 from src.database import Base
 from src.auth import models
 from src.operations import models
+from src.chat import models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
